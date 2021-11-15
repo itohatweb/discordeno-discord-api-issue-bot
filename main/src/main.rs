@@ -132,6 +132,8 @@ async fn handle_event(
                     .components(&components)?
                     .exec()
                     .await?;
+
+                // TODO: DELETE MESSAGE (STILL TESTING THE BOT SO ITS NOT HERE)
             }
         }
         Event::ShardConnected(_) => {
