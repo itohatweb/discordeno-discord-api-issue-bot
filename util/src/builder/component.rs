@@ -30,10 +30,7 @@ impl ComponentBuilder {
             Some(Component::ActionRow(action_row))
                 if action_row.components.len() < 5
                 // Currently only buttons are allowed to be in the same ActionRow
-                    && action_row.components.iter().all(|c| match c {
-                        Component::Button(_) => true,
-                        _ => false,
-                    }) =>
+                    && action_row.components.iter().all(|c| matches!(c, Component::Button(_))) =>
             {
                 action_row.components.push(Component::Button(button));
 

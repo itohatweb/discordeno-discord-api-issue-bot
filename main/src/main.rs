@@ -103,7 +103,7 @@ async fn handle_event(
             if message.content.starts_with("++fakeit")
                 && message.author.id == UserId::new(615542460151496705_u64).unwrap()
             {
-                let id = if let Some(id) = message.content.split(" ").skip(1).next() {
+                let id = if let Some(id) = message.content.split(' ').nth(1) {
                     let raw = id.parse::<u64>()?;
                     let id = MessageId::new(raw);
                     if id.is_none() {
@@ -298,7 +298,7 @@ async fn create_issues(url: String) -> Result<(), CreateIssuesError> {
     }
 
     if let Ok(client) = reqwest::Client::builder().build() {
-        let hash_part = url.split("/").last();
+        let hash_part = url.split('/').last();
         if hash_part == None {
             return Err(CreateIssuesError::NoHashFound);
         }
@@ -339,7 +339,7 @@ async fn create_issues(url: String) -> Result<(), CreateIssuesError> {
         let mut len = commits.len();
 
         for commit in commits {
-            let url = match commit.url.split("/").last() {
+            let url = match commit.url.split('/').last() {
                 Some(hash) => format!(
                     "https://github.com/discord/discord-api-docs/commit/{}",
                     hash
