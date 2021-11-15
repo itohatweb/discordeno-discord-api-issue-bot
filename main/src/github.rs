@@ -39,10 +39,14 @@ pub async fn create_issues(url: String) -> Result<(), CreateIssuesError> {
             ));
 
             request = build_request_headers(request);
-            if let Ok(res) = request.send().await {
-                let commit_data = res.json::<GitHubCommit>().await?;
-                commits.push(commit_data.commit);
-            }
+            let res = request.send().await;
+            let commit_data = res.unwrap().json::<GitHubCommit>().await?;
+            commits.push(commit_data.commit);
+
+            // if let Ok(res) = request.send().await {
+            //     let commit_data = res.json::<GitHubCommit>().await?;
+            //     commits.push(commit_data.commit)
+            // }
         } else {
             // Its a compare URL
             // First get the issue
