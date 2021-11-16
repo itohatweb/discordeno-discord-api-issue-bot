@@ -5,8 +5,14 @@ use twilight_model::{
 
 pub const API_DOCS_CHANNEL: ChannelId = unsafe { ChannelId::new_unchecked(881991954676715653_u64) };
 pub const API_DOCS_BOT_ID: UserId = unsafe { UserId::new_unchecked(881992163855065089_u64) };
-pub const ISSUE_MANAGEMENT_USERS: [UserId; 1] =
-    unsafe { [UserId::new_unchecked(615542460151496705_u64)] };
+pub const ISSUE_MANAGEMENT_USERS: [UserId; 2] = unsafe {
+    [
+        // ITOH
+        UserId::new_unchecked(615542460151496705_u64),
+        // SKILLZ
+        UserId::new_unchecked(130136895395987456_u64),
+    ]
+};
 
 pub const ISSUE_BUTTON_EMOJI: ReactionType = unsafe {
     ReactionType::Custom {
