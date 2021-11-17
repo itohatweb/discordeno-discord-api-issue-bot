@@ -133,7 +133,9 @@ async fn handle_event(
                     .exec()
                     .await?;
 
-                // TODO: DELETE MESSAGE (STILL TESTING THE BOT SO ITS NOT HERE)
+                http.delete_message(API_DOCS_CHANNEL, message.id)
+                    .exec()
+                    .await?;
             }
         }
         Event::ShardConnected(_) => {
