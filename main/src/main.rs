@@ -114,6 +114,18 @@ async fn handle_event(
                     return Ok(());
                 }
 
+                // It's possible that the commit has not been made to the `master` branch so check that
+                if let Some(embed) = message.embeds.first() {
+                    if let Some(title) = &embed.title {
+                        if !title.starts_with("[discord-api-docs:master]") {
+                            return Ok(());
+                        }
+                    }
+                } else {
+                    // Somehow no embed so just return
+                    return Ok(());
+                }
+
                 let components = ComponentBuilder::new()
                     .button(
                         ButtonBuilder::new(ButtonStyle::Primary, "create-github-issue".into())
