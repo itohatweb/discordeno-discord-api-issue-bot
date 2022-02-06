@@ -10,6 +10,19 @@ pub enum CreateIssuesError {
     ReqwestError(#[from] reqwest::Error),
 }
 
+fn construct(message: String) -> (String, Option<String>) {
+    let mut parts: Vec<_> = message.split('\n').into_iter().collect();
+
+    let title = parts.remove(0).to_owned();
+    let description = if !parts.is_empty() {
+        Some(parts.join("\n"))
+    } else {
+        None
+    };
+
+    (title, description)
+}
+
 pub async fn create_issues(url: String) -> Result<(), CreateIssuesError> {
     fn build_request_headers(mut request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
         request = request.header(reqwest::header::USER_AGENT, "Discordeno Issue Creation Bot");
@@ -81,8 +94,9 @@ pub async fn create_issues(url: String) -> Result<(), CreateIssuesError> {
 
             request = build_request_headers(request);
             request = request.header(reqwest::header::ACCEPT, "application/vnd.github.v3+json");
+            let parsed = construct(commit.message);
             request
-                .json(&GithubCreateIssue::new(commit.message, url))
+                .json(&GithubCreateIssue::new(parsed.0, parsed.1, url))
                 .send()
                 .await?;
 
@@ -104,12 +118,13 @@ pub struct GithubCreateIssue {
 }
 
 impl GithubCreateIssue {
-    fn new(commit_message: String, url: String) -> Self {
+    fn new(title: String, description: Option<String>, url: String) -> Self {
         Self {
-            title: format!("[api-docs] {}", commit_message),
+            title: format!("[api-docs] {}", title),
             body: format!(
-                "A new commit was made into the api-docs repo.\n{}\n\nThis is a bot created issue.",
-                url
+                "A new commit was made into the api-docs repo: {}\n{}\n\nThis is a bot created issue.",
+                url,
+                description.unwrap_or_else(|| "No details given.".to_owned()),
             ),
             labels: vec!["api-docs-commits".into()],
         }
